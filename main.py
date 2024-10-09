@@ -17,21 +17,24 @@ def get_comments(filepath):
     for c in activeDoc.Comments:
         if c.Ancestor is None:  # checking if this is a top-level comment
             comment_text = c.Range.Text
-            sentence = str(c.Scope.Sentences(1)).strip()
+            paragraph = c.Scope.Paragraphs(1)
+            paragraph_text = paragraph.Range.Text.strip()
 
             comment_data.append({
                 'Author': c.Author,
                 'Comment': comment_text,
-                'Regarding': sentence,
+                'Regarding': paragraph_text,
                 'Replies': len(c.Replies)
             })
             if len(c.Replies) > 0:  # if the comment has replies
                 for r in range(1, len(c.Replies) + 1):
                     reply_text = c.Replies(r).Range.Text
+                    reply_paragraph = c.Replies(r).Scope.Paragraphs(1)
+                    reply_paragraph_text = reply_paragraph.Range.Text.strip()
                     comment_data.append({
                         'Author': c.Replies(r).Author,
                         'Comment': reply_text,
-                        'Regarding': sentence,
+                        'Regarding': reply_paragraph_text,
                         'Replies': 0
                     })
     doc.Close()
