@@ -1,12 +1,12 @@
 import win32com.client as win32
-from win32com.client import constants
 import pandas as pd
 import xlsxwriter
+import subprocess
 
+# Get the currently active Word document
 word = win32.gencache.EnsureDispatch('Word.Application')
-word.Visible = False
-filepath = "C:\\Users\\emichin\\Desktop\\Py\\CommentExtraction\\pythonProject\\test1.docx"
-
+active_doc = word.ActiveDocument
+filepath = active_doc.FullName
 
 def get_comments(filepath):
     doc = word.Documents.Open(filepath)
@@ -48,7 +48,8 @@ print(df.to_dict(orient="records"))
 dictionary = df.to_dict(orient="records")
 
 # Create an Excel file using xlsxwriter
-workbook = xlsxwriter.Workbook('comment_data.xlsx')
+excel_file = 'comment_data.xlsx'
+workbook = xlsxwriter.Workbook(excel_file)
 worksheet = workbook.add_worksheet()
 
 # Write the headers to the Excel file
@@ -59,3 +60,6 @@ for i, row in enumerate(df.iterrows(), start=1):
     worksheet.write_row(i, 0, row[1].tolist())
 
 workbook.close()
+
+# Open the Excel file
+subprocess.Popen([excel_file], shell=True)
