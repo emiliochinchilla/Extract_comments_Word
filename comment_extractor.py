@@ -1,8 +1,6 @@
 import win32com.client as win32
-from win32com.client import constants
 import pandas as pd
 import xlsxwriter
-import os
 import subprocess
 import sys
 import PyInstaller.__main__
