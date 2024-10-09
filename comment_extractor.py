@@ -1,12 +1,11 @@
 import win32com.client as win32
+from win32com.client import constants
 import pandas as pd
 import xlsxwriter
+import os
 import subprocess
-
-# Get the currently active Word document
-word = win32.gencache.EnsureDispatch('Word.Application')
-active_doc = word.ActiveDocument
-filepath = active_doc.FullName
+import sys
+import PyInstaller.__main__
 
 def get_comments(filepath):
     doc = word.Documents.Open(filepath)
@@ -41,6 +40,10 @@ def get_comments(filepath):
 
     return pd.DataFrame(comment_data)
 
+# Get the currently active Word document
+word = win32.gencache.EnsureDispatch('Word.Application')
+active_doc = word.ActiveDocument
+filepath = active_doc.FullName
 
 # Call the function and export to Excel
 df = get_comments(filepath)
@@ -63,3 +66,10 @@ workbook.close()
 
 # Open the Excel file
 subprocess.Popen([excel_file], shell=True)
+
+if __name__ == '__main__':
+    PyInstaller.__main__.run([
+        '--onefile',
+        '--windowed',
+        sys.argv[0]
+    ])
